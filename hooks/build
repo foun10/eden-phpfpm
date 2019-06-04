@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+SOURCE_TAG="fpm"
+
+if [[ ${DOCKER_TAG} != "latest" ]]; then
+    SOURCE_TAG="${DOCKER_TAG}-fpm"
+fi
+
+echo "Start build for source tag ${SOURCE_TAG}"
+docker build --build-arg SOURCE_TAG=${SOURCE_TAG} -f ${DOCKERFILE_PATH} -t ${IMAGE_NAME} .
