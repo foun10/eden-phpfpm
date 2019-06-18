@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 app_dir=${APP_DIR}
+htdocs_dir=${HTDOCS_DIR}
 db_host=${DB_HOST}
 db_user=${DB_USER}
 db_pass=${DB_PASS}
@@ -14,6 +15,10 @@ user_mail=${USER_MAIL}
 user_pass=${USER_PASS}
 file_permissions=${FILE_PERMISSIONS}
 
+if [[ ${htdocs_dir} = '' ]]; then
+    htdocs_dir=${app_dir}
+fi
+
 function import_sql() {
     local sql_file=${1}
 
@@ -23,8 +28,8 @@ function import_sql() {
 }
 
 if [[ ! -f "${app_dir}/init.lock" ]]; then
-    if [[ -f "${app_dir}/pre.sh" ]]; then
-        bash "${app_dir}/pre.sh"
+    if [[ -f "${app_dir}/eden-phpfpm/pre.sh" ]]; then
+        bash "${app_dir}/eden-phpfpm/pre.sh"
     fi
 
     cd ${app_dir}
@@ -72,6 +77,13 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
             if [[ -f "${db_dump_with_path}" ]]; then
                 import_sql "${db_dump_with_path}"
             elif [[ -d "${db_dump_with_path}" ]]; then
+                # Unzip files
+                for file in ${db_dump_with_path}/*.bz2; do
+                    if [[ -f "${file}" ]]; then
+                        bzip2 -dk "${file}"
+                    fi
+                done
+
                 for file in ${db_dump_with_path}/*.sql; do
                     if [[ -f "${file}" ]]; then
                         import_sql "${file}"
@@ -81,11 +93,14 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
         fi
     fi
 
-    DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    project_file="${DIR}/projects/${project_type}.sh"
+    project_type_url="https://raw.githubusercontent.com/foun10/eden-phpfpm-project-types/master/types/${project_type}.sh"
 
-    if [[ -f ${project_file} ]]; then
-        source ${project_file}
+    if [[ `wget -S --spider ${project_type_url} 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+        project_type_file="/tmp/project.sh"
+        wget -q --no-check-certificate ${project_type_url} -O ${project_type_file}
+        source ${project_type_file}
+    else
+        echo "Project type ${project_type} not found, please see https://github.com/foun10/eden-phpfpm-project-types for more information."
     fi
 
     if [[ ${file_permissions} != '' ]]; then
@@ -110,13 +125,13 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
         echo "$(git status --porcelain | grep '^??' | cut -c4-)" > "${app_dir}/.gitignore"
     fi
 
-    if [[ -f "${app_dir}/post.sh" ]]; then
-        bash "${app_dir}/post.sh"
+    if [[ -f "${app_dir}/eden-phpfpm/post.sh" ]]; then
+        bash "${app_dir}/eden-phpfpm/post.sh"
     fi
 fi
 
-if [[ -f "${app_dir}/always.sh" ]]; then
-    bash "${app_dir}/always.sh"
+if [[ -f "${app_dir}/eden-phpfpm/always.sh" ]]; then
+    bash "${app_dir}/eden-phpfpm/always.sh"
 fi
 
 # Start php

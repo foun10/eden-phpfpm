@@ -1,5 +1,5 @@
 EDEN - PHPFPM
-=========================
+=============
 
 General information
 -------------------
@@ -11,6 +11,8 @@ Environment variables
 
 Name | Description | possible values (/format) | default | mandatory
 --- | --- | --- | --- | ---
+APP_DIR | The app directory. | any valid dir | /var/www/app | n
+HTDOCS_DIR | The htdocs directory. | any valid dir | same as APP_DIR | n
 DB_HOST | The database host. | any valid host | mysql | n
 DB_USER | The database username. | any valid username | root | n
 DB_PASS | The database password. | any valid password | root | n
@@ -20,9 +22,17 @@ BACKUP_URL | The url from which you want to grab the backup. | any valid url | E
 BACKUP_USER | The username for the backup download. | any valid username | EMPTY | n
 BACKUP_PASS | The password for the backup download. | any valid password | EMPTY | n
 PROJECT_URL | The project url for the config files. If you use docker dns something like _FOLDERNAME__web_1.local.docker | any valid url | EMPTY | n
-PROJECT_TYPE | Depending on the project type the script under projects will be executed. | oxid,shopware | EMPTY | n
+PROJECT_TYPE | Depending on the project type the script available at https://github.com/foun10/eden-phpfpm-project-types will be executed. | any valid project type | EMPTY | n
 USER_MAIL | The user mail for the default user. | any valid mail | dev@local.docker | n
 USER_PASS | The password for the default user. | any valid password | root | n
+FILE_PERMISSIONS | If set the file permission of the files under APP_DIR will be changed to the defined permission. | any valid permission mode | EMPTY | n
+
+
+Additional commands
+-------------------
+
+There are three possible hooks to execute additional commands at the startup. Place a file under `APP_DIR/eden-phpfpm/TYPE.sh`. Valid types are `pre`, `post` and `always.`
+
 
 First run
 ---------

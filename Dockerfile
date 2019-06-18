@@ -43,6 +43,7 @@ RUN apt-get install -y nodejs
 RUN gem update --system && gem install compass
 
 ENV APP_DIR '/var/www/app'
+ENV HTDOCS_DIR ''
 ENV DB_HOST 'mysql'
 ENV DB_USER 'root'
 ENV DB_PASS 'root'
@@ -57,7 +58,6 @@ ENV USER_MAIL 'dev@local.docker'
 ENV USER_PASS 'root'
 ENV FILE_PERMISSIONS ''
 
-ADD projects /usr/bin/projects
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run
 WORKDIR /var/www/app
