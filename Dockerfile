@@ -40,7 +40,9 @@ RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get install -y nodejs
 
 # Install compass
-RUN gem update --system && gem install compass
+RUN if ! type "gem" > /dev/null; then apt-get install -y rubygems; fi
+RUN gem update --system --conservative || (gem i "rubygems-update:~>2.7" --no-document && update_rubygems)
+RUN gem install compass || gem install rb-inotify -v 0.9.10 && gem install compass
 
 ENV APP_DIR '/var/www/app'
 ENV HTDOCS_DIR ''

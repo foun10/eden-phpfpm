@@ -80,6 +80,7 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
                 # Unzip files
                 for file in ${db_dump_with_path}/*.bz2; do
                     if [[ -f "${file}" ]]; then
+                        echo "Extract ${file}"
                         bzip2 -dk "${file}"
                     fi
                 done
