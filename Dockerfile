@@ -1,37 +1,18 @@
 ARG SOURCE_TAG=fpm
 FROM php:${SOURCE_TAG}
-MAINTAINER Alexander Schneider <alexanderschneider85@gmail.com>
-# Install modules
-RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -q \
-    && DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade --fix-missing -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libcurl4-nss-dev \
-        libxml2-dev \
-        zlib1g-dev \
-        libicu-dev \
-        libpcre3-dev \
-        lib32ncurses5 \
-        libzip-dev \
-        g++ \
-        git \
-        wget \
-        curl \
-        mysql-client \
-        libpq-dev \
-        libyaml-dev \
-        vim \
-        software-properties-common \
-        gnupg2 \
-        ruby-dev
+MAINTAINER Alexander Schneider <schneider@foun10.com>
+
+# Install packages
+ADD packages /tmp/packages
+RUN chmod +x /tmp/packages/install_packages.sh
+RUN /tmp/packages/install_packages.sh /tmp/packages/
 
 # Install php extensions
 ADD extensions /tmp/php/extensions
 RUN chmod +x /tmp/php/extensions/install_extensions.sh
 RUN /tmp/php/extensions/install_extensions.sh /tmp/php/extensions/
+
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
@@ -44,6 +25,7 @@ RUN if ! type "gem" > /dev/null; then apt-get install -y rubygems; fi
 RUN gem update --system --conservative || (gem i "rubygems-update:~>2.7" --no-document && update_rubygems)
 RUN gem install compass || gem install rb-inotify -v 0.9.10 && gem install compass
 
+# Set default values
 ENV APP_DIR '/var/www/app'
 ENV HTDOCS_DIR ''
 ENV DB_HOST 'mysql'
