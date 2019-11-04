@@ -77,6 +77,11 @@ if [[ ${PHP_VERSION} =~ ${VERSION_REGEX} ]]; then
         install_extension mcrypt
     fi
 
+    if [[ ${PHP_VERSION} =~ ^5\.([0-3]+).* ]]; then
+        mkdir /usr/include/freetype2/freetype
+        ln -s /usr/include/freetype2/freetype.h /usr/include/freetype2/freetype/freetype.h
+    fi
+
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
     install_extension gd
     install_extension curl
@@ -107,7 +112,9 @@ if [[ ${PHP_VERSION} =~ ${VERSION_REGEX} ]]; then
 
     install_extension yaml
 
-    if [[ ${PHP_VERSION} =~ ^5\.([0-9]+).* ]]; then
+    if [[ ${PHP_VERSION} =~ ^5\.([0-3]+).* ]]; then
+        pecl install xdebug-2.2.7
+    elif [[ ${PHP_VERSION} =~ ^5\.([4-9]+).* ]]; then
         pecl install xdebug-2.4.1
     else
         pecl install xdebug

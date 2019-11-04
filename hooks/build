@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-SOURCE_TAG="fpm"
+SOURCE_TAG="php:fpm"
 
-if [[ ${DOCKER_TAG} != "latest" ]]; then
-    SOURCE_TAG="${DOCKER_TAG}-fpm"
+if [[ ${DOCKER_TAG} =~ ^5\.([0-3]+).* ]]; then
+    SOURCE_TAG="devilbox/php-fpm-${DOCKER_TAG}:latest"
+elif [[ ${DOCKER_TAG} != "latest" ]]; then
+    SOURCE_TAG="php:${DOCKER_TAG}-fpm"
 fi
 
 echo "Start build for source tag ${SOURCE_TAG}"

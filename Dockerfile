@@ -1,5 +1,5 @@
-ARG SOURCE_TAG=fpm
-FROM php:${SOURCE_TAG}
+ARG SOURCE_TAG=php:fpm
+FROM ${SOURCE_TAG}
 MAINTAINER Alexander Schneider <schneider@foun10.com>
 
 # Install packages
