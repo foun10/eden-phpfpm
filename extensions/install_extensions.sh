@@ -17,6 +17,7 @@ fi
 
 install_extension() {
     local extension=${1}
+    local use_full_path=${2+x}
     local extension_name=''
     local source_path=''
     local file_regex="(^.*\/)(.*)-[0-9]\.[0-9]\.so"
@@ -56,6 +57,10 @@ install_extension() {
         if [[ -f ${original_ini_file} ]]; then
             if ! $(grep -q 'zend_extension' ${original_ini_file}); then
                 sed -i -e 's/extension/zend_extension/g' ${original_ini_file}
+            fi
+
+            if [[ ${use_full_path} ]] && $(grep -q "zend_extension=${extension_name}.so" ${original_ini_file}); then
+                sed -i -e "s|${extension_name}.so|${extension_name_with_path}|g" ${original_ini_file}
             fi
 
             cat ${ini_file} >> ${original_ini_file}
@@ -123,7 +128,12 @@ if [[ ${PHP_VERSION} =~ ${VERSION_REGEX} ]]; then
     install_extension xdebug
 
     install_extension "${TMP_PHP_EXTENSIONS_PATH}ioncube-${SHORTEN_PHP_VERSION}.so"
-    install_extension "${TMP_PHP_EXTENSIONS_PATH}zendguardloader-${SHORTEN_PHP_VERSION}.so"
+
+    if [[ ${PHP_VERSION} =~ ^5\.([0-3]+).* ]]; then
+        install_extension "${TMP_PHP_EXTENSIONS_PATH}zendguardloader-${SHORTEN_PHP_VERSION}.so" true
+    else
+        install_extension "${TMP_PHP_EXTENSIONS_PATH}zendguardloader-${SHORTEN_PHP_VERSION}.so"
+    fi
 
     if [[ ${PHP_VERSION} =~ ^5\.([0-9]+).* ]]; then
         pecl install oauth-1.2.3
