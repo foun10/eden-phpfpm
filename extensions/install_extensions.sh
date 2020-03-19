@@ -87,7 +87,12 @@ if [[ ${PHP_VERSION} =~ ${VERSION_REGEX} ]]; then
         ln -s /usr/include/freetype2/freetype.h /usr/include/freetype2/freetype/freetype.h
     fi
 
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+    if [[ ${PHP_VERSION} =~ ^7\.([4-9]+).* ]]; then
+        docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+    else
+        docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+    fi
+
     install_extension gd
     install_extension curl
     install_extension mysqli

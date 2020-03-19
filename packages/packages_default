@@ -18,3 +18,5 @@ vim
 software-properties-common
 gnupg2
 ruby-dev
+bzip2
+libonig-dev
