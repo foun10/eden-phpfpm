@@ -126,6 +126,8 @@ if [[ ${PHP_VERSION} =~ ${VERSION_REGEX} ]]; then
         pecl install xdebug-2.2.7
     elif [[ ${PHP_VERSION} =~ ^5\.([4-9]+).* ]]; then
         pecl install xdebug-2.4.1
+    elif [[ ${PHP_VERSION} =~ ^7\.([0]+).* ]]; then
+        pecl install xdebug-2.7.2
     else
         pecl install xdebug
     fi
