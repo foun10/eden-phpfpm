@@ -126,6 +126,9 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
         echo "$(git status --porcelain | grep '^??' | cut -c4-)" > "${app_dir}/.gitignore"
     fi
 
+    # Remove empty lines
+    echo "$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' ${app_dir}/.gitignore)" > ${app_dir}/.gitignore
+
     if [[ -f "${app_dir}/eden-phpfpm/post.sh" ]]; then
         bash "${app_dir}/eden-phpfpm/post.sh"
     fi
