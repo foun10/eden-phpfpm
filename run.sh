@@ -14,6 +14,8 @@ project_type=${PROJECT_TYPE}
 user_mail=${USER_MAIL}
 user_pass=${USER_PASS}
 file_permissions=${FILE_PERMISSIONS}
+custom_uid=${CUSTOM_UID}
+update_gitignore=${UPDATE_GITIGNORE}
 
 if [[ ${htdocs_dir} = '' ]]; then
     htdocs_dir=${app_dir}
@@ -94,40 +96,52 @@ if [[ ! -f "${app_dir}/init.lock" ]]; then
         fi
     fi
 
-    project_type_url="https://raw.githubusercontent.com/foun10/eden-phpfpm-project-types/master/types/${project_type}.sh"
+    # Run project type configuration
+    if [[ ${project_type} != '' ]]; then
+        project_type_url="https://raw.githubusercontent.com/foun10/eden-phpfpm-project-types/master/types/${project_type}.sh"
 
-    if [[ `wget -S --spider ${project_type_url} 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-        project_type_file="/tmp/project.sh"
-        wget -q --no-check-certificate ${project_type_url} -O ${project_type_file}
-        source ${project_type_file}
-    else
-        echo "Project type ${project_type} not found, please see https://github.com/foun10/eden-phpfpm-project-types for more information."
+        if [[ `wget -S --spider ${project_type_url} 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+            project_type_file="/tmp/project.sh"
+            wget -q --no-check-certificate ${project_type_url} -O ${project_type_file}
+            source ${project_type_file}
+        else
+            echo "Project type ${project_type} not found, please see https://github.com/foun10/eden-phpfpm-project-types for more information."
+        fi
     fi
 
+    # Set uid
+    if [[ ${custom_uid} = 'default' ]]; then
+        chown ${UID} -R ${app_dir}
+    elif [[ ${custom_uid} != '' ]]; then
+        chown ${custom_uid} -R ${app_dir}
+    fi
+
+
+    # Set permissions
     if [[ ${file_permissions} != '' ]]; then
         echo "set file permissions"
         chmod ${file_permissions} -R ${app_dir}
     fi
 
-    chown $UID -R ${app_dir}
-
-    echo "clean up"
     if [[ -f "${backup_file}" ]]; then
+          echo "clean up backup"
         rm -f "${backup_file}"
+    fi
+
+    if [[ ${update_gitignore} = 'y' ]]; then
+        if [[ -f "${app_dir}/.gitignore" ]]; then
+            echo "" >> "${app_dir}/.gitignore" # new line
+            echo "$(git status --porcelain | grep '^??' | cut -c4-)" >> "${app_dir}/.gitignore"
+        else
+            echo "$(git status --porcelain | grep '^??' | cut -c4-)" > "${app_dir}/.gitignore"
+        fi
+
+        # Remove empty lines
+        echo "$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' ${app_dir}/.gitignore)" > ${app_dir}/.gitignore
     fi
 
     touch "${app_dir}/init.lock"
     chmod 777 "${app_dir}/init.lock"
-
-    if [[ -f "${app_dir}/.gitignore" ]]; then
-        echo "" >> "${app_dir}/.gitignore" # new line
-        echo "$(git status --porcelain | grep '^??' | cut -c4-)" >> "${app_dir}/.gitignore"
-    else
-        echo "$(git status --porcelain | grep '^??' | cut -c4-)" > "${app_dir}/.gitignore"
-    fi
-
-    # Remove empty lines
-    echo "$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' ${app_dir}/.gitignore)" > ${app_dir}/.gitignore
 
     if [[ -f "${app_dir}/eden-phpfpm/post.sh" ]]; then
         bash "${app_dir}/eden-phpfpm/post.sh"

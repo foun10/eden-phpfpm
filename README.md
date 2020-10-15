@@ -26,6 +26,8 @@ PROJECT_TYPE | Depending on the project type the script available at https://git
 USER_MAIL | The user mail for the default user. | any valid mail | dev@local.docker | n
 USER_PASS | The password for the default user. | any valid password | root | n
 FILE_PERMISSIONS | If set the file permission of the files under APP_DIR will be changed to the defined permission. | any valid permission mode | EMPTY | n
+CUSTOM_UID | If set the uid for the files under APP_DIR will be changed to the defined uid. Use _default_ for the default container uid | any valid uid | EMPTY | n
+UPDATE_GITIGNORE | If set to _y_ the gitignore file will automatically updated. | y or n | n | n
 
 
 Additional commands

@@ -41,6 +41,8 @@ ENV PROJECT_TYPE ''
 ENV USER_MAIL 'dev@local.docker'
 ENV USER_PASS 'root'
 ENV FILE_PERMISSIONS ''
+ENV CUSTOM_UID ''
+ENV UPDATE_GITIGNORE 'n'
 
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run
