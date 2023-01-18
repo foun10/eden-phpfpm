@@ -8,44 +8,48 @@ RUN chmod +x /tmp/packages/install_packages.sh
 RUN /tmp/packages/install_packages.sh /tmp/packages/
 
 # Install php extensions
-ADD extensions /tmp/php/extensions
-RUN chmod +x /tmp/php/extensions/install_extensions.sh
-RUN /tmp/php/extensions/install_extensions.sh /tmp/php/extensions/
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && sync
+RUN install-php-extensions gd \
+    xdebug \
+    iconv \
+    mcrypt \
+    curl \
+    mysqli \
+    pdo \
+    pdo_mysql \
+    pgsql \
+    mbstring \
+    zip \
+    soap \
+    intl \
+    bcmath \
+    oauth \
+    yaml \
+    @composer
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
+# Ignore error if package doesn't exist for php version
+RUN install-php-extensions xsd; exit 0
+RUN install-php-extensions ioncube_loader; exit 0
+
+RUN echo -e "memory_limit=-1;" >> /usr/local/etc/php/conf.d/custom.ini
 
 # Install node js
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
-# Install compass
-RUN if ! type "gem" > /dev/null; then apt-get install -y rubygems; fi
-RUN gem update --system --conservative || (gem i "rubygems-update:~>2.7" --no-document && update_rubygems)
-RUN gem install compass || gem install rb-inotify -v 0.9.10 && gem install compass
+# Clean up
+RUN apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
 
 # Set default values
 ENV APP_DIR '/var/www/app'
 ENV HTDOCS_DIR ''
-ENV DB_HOST 'mysql'
-ENV DB_USER 'root'
-ENV DB_PASS 'root'
-ENV DB_NAME 'app'
-ENV DB_DUMP ''
-ENV BACKUP_URL ''
-ENV BACKUP_USER ''
-ENV BACKUP_PASS ''
-ENV PROJECT_URL ''
-ENV PROJECT_TYPE ''
-ENV USER_MAIL 'dev@local.docker'
-ENV USER_PASS 'root'
-ENV FILE_PERMISSIONS ''
-ENV CUSTOM_UID ''
-ENV UPDATE_GITIGNORE 'n'
 
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run
-WORKDIR /var/www/app
+WORKDIR ${APP_DIR}
 EXPOSE 22 9000
 CMD ["/bin/bash", "/usr/bin/run"]
