@@ -24,7 +24,7 @@ jobs:
   php-fpm:
     strategy:
       matrix:
-        container-tag: [ "8.2", "8.1", "8.0", "7.4" ]
+        container-tag: [ "8.2", "8.1", "8.0", "7.4", "7.3" ]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub

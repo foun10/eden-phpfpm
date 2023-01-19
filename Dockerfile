@@ -46,7 +46,6 @@ RUN apt-get autoremove -y \
 
 # Set default values
 ENV APP_DIR '/var/www/app'
-ENV HTDOCS_DIR ''
 
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run

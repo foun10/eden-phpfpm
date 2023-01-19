@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
-app_dir=${APP_DIR}
+if [[ ! -f "/eden-scripts/init.lock" ]]; then
+    touch "/eden-scripts/init.lock"
+    chmod 777 "/eden-scripts/init.lock"
 
-if [[ ! -f "${app_dir}/init.lock" ]]; then
-    touch "${app_dir}/init.lock"
-    chmod 777 "${app_dir}/init.lock"
-
-    if [[ -f "${app_dir}/eden-phpfpm/init.sh" ]]; then
-        bash "${app_dir}/eden-phpfpm/init.sh"
+    if [[ -f "/eden-scripts/init.sh" ]]; then
+        bash "/eden-scripts/init.sh"
     fi
 fi
 
-if [[ -f "${app_dir}/eden-phpfpm/always.sh" ]]; then
-    bash "${app_dir}/eden-phpfpm/always.sh"
+if [[ -f "/eden-scripts/always.sh" ]]; then
+    bash "/eden-scripts/always.sh"
 fi
 
 # Start php
