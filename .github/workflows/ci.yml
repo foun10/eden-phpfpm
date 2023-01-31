@@ -22,8 +22,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            SOURCE_TAG=php:fpm
-          tags: foun10/eden-phpfpm:8.1
+            SOURCE_TAG=php:8.1-fpm
+          tags: foun10/eden-phpfpm:latest
   php-fpm-versions:
     strategy:
       matrix:
