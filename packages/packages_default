@@ -2,3 +2,5 @@ git
 wget
 curl
 vim
+ca-certificates
+gnupg
