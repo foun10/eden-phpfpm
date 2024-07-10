@@ -60,7 +60,7 @@ RUN apt-get autoremove -y \
     && rm -rf /tmp/*
 
 # Set default values
-ENV APP_DIR '/var/www/app'
+ENV APP_DIR '/var/www/html'
 
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run

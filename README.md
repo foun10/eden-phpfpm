@@ -9,9 +9,9 @@ This container provides php 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1 and 8.2 trough php
 Environment variables
 ---------------------
 
-| Name    | Description        | possible values (/format) | default      | mandatory |
-|---------|--------------------|---------------------------|--------------|-----------|
-| APP_DIR | The app directory. | any valid dir             | /var/www/app | n         |
+| Name    | Description        | possible values (/format) | default       | mandatory |
+|---------|--------------------|---------------------------|---------------|-----------|
+| APP_DIR | The app directory. | any valid dir             | /var/www/html | n         |
 
 Additional commands
 -------------------
