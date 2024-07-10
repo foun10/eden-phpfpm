@@ -44,4 +44,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             SOURCE_TAG=php:${{ matrix.container-tag }}-fpm
-          tags: foun10/eden-phpfpm:test-${{ matrix.container-tag }}
+          tags: foun10/eden-phpfpm:${{ matrix.container-tag }}

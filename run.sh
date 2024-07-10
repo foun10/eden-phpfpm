@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 if [[ ! -f "/eden-scripts/init.lock" ]]; then
     if [[ -f "/eden-scripts/init.sh" ]]; then
         bash "/eden-scripts/init.sh"

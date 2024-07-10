@@ -32,7 +32,18 @@ RUN install-php-extensions gd \
 RUN install-php-extensions xsd; exit 0
 RUN install-php-extensions ioncube_loader; exit 0
 
-RUN echo -e "memory_limit=-1;" >> /usr/local/etc/php/conf.d/custom.ini
+# Add php config
+COPY config/custom.ini /usr/local/etc/php/conf.d/20-custom.ini
+ENV PHP_MEMORY_LIMIT "-1"
+ENV PHP_MAX_EXECUTION_TIME "-1"
+ENV PHP_POST_MAX_SIZE "100M"
+ENV PHP_UPLOAD_MAX_FILESIZE "100M"
+ENV PHP_DISPLAY_STARTUP_ERRORS 1
+ENV PHP_ERROR_REPORTING "E_ALL"
+
+# Add xdebug config
+COPY config/extensions/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+ENV XDEBUG_IDE_KEY "docker"
 
 # Install node js
 ENV NODE_MAJOR=18
