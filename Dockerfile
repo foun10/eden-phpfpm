@@ -26,6 +26,7 @@ RUN install-php-extensions gd \
     bcmath \
     oauth \
     yaml \
+    amqp \
     @composer
 
 # Ignore error if package doesn't exist for php version
