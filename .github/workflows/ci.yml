@@ -35,5 +35,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            SOURCE_TAG=php:${{ matrix.container.soruce }}-fpm
+            SOURCE_TAG=php:${{ matrix.container.source }}-fpm
           tags: ${{ matrix.container.tags }}
