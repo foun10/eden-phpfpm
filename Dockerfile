@@ -48,7 +48,7 @@ ENV XDEBUG_IDE_KEY "docker"
 
 # Install node js
 ENV NODE_MAJOR=18
-RUN curl -fsSL https://deb.nodesource.com/setup_$NODE_MAJOR.x | sudo bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
 RUN apt-get update \
     && apt-get -y install --no-install-recommends nodejs
 RUN apt-get -y install --no-install-recommends npm || true
