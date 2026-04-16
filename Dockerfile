@@ -1,6 +1,7 @@
 ARG SOURCE_TAG=php:fpm
 FROM ${SOURCE_TAG}
-MAINTAINER Alexander Schneider <schneider@foun10.com>
+LABEL vendor="foun10 GmbH"
+LABEL maintainer="Alexander Schneider <schneider@foun10.com>"
 
 # Install packages
 ADD packages /tmp/packages
@@ -35,16 +36,16 @@ RUN install-php-extensions ioncube_loader; exit 0
 
 # Add php config
 COPY config/custom.ini /usr/local/etc/php/conf.d/20-custom.ini
-ENV PHP_MEMORY_LIMIT "-1"
-ENV PHP_MAX_EXECUTION_TIME "-1"
-ENV PHP_POST_MAX_SIZE "100M"
-ENV PHP_UPLOAD_MAX_FILESIZE "100M"
-ENV PHP_DISPLAY_STARTUP_ERRORS 1
-ENV PHP_ERROR_REPORTING "E_ALL"
+ENV PHP_MEMORY_LIMIT=-1
+ENV PHP_MAX_EXECUTION_TIME=-1
+ENV PHP_POST_MAX_SIZE=100M
+ENV PHP_UPLOAD_MAX_FILESIZE=100M
+ENV PHP_DISPLAY_STARTUP_ERRORS=1
+ENV PHP_ERROR_REPORTING=E_ALL
 
 # Add xdebug config
 COPY config/extensions/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-ENV XDEBUG_IDE_KEY "docker"
+ENV XDEBUG_IDE_KEY=docker
 
 # Install node js
 ENV NODE_MAJOR=18
@@ -60,7 +61,7 @@ RUN apt-get autoremove -y \
     && rm -rf /tmp/*
 
 # Set default values
-ENV APP_DIR '/var/www/html'
+ENV APP_DIR=/var/www/html
 
 ADD run.sh /usr/bin/run
 RUN chmod +x /usr/bin/run
