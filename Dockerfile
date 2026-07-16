@@ -48,11 +48,13 @@ COPY config/extensions/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebu
 ENV XDEBUG_IDE_KEY=docker
 
 # Install node js
-ENV NODE_MAJOR=18
-RUN curl -fsSL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
-RUN apt-get update \
-    && apt-get -y install --no-install-recommends nodejs
-RUN apt-get -y install --no-install-recommends npm || true
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
+
+# set env
+ENV NODE_VERSION=18
+ENV NVM_DIR=/root/.nvm
+# install node
+RUN bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION"
 
 # Clean up
 RUN apt-get autoremove -y \
