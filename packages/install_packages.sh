@@ -12,11 +12,13 @@ apt-get install -y $(paste -s -d ' ' ${TMP_PACKAGE_PATH}packages_default)
 
 # Detect version
 . /etc/os-release
+VERSION_ID=${VERSION_ID:-}
+VERSION_MAJOR=${VERSION_ID%%.*}
 
-if [[ -f ${TMP_PACKAGE_PATH}packages_${VERSION_ID} ]]; then
+if [[ -n ${VERSION_ID} && -f ${TMP_PACKAGE_PATH}packages_${VERSION_ID} ]]; then
   echo "Install packages for version ${VERSION_ID}"
   apt-get install -y $(paste -s -d ' ' ${TMP_PACKAGE_PATH}packages_${VERSION_ID})
-elseif [[ VERSION_ID < 10 ]]; them
+elif [[ ${VERSION_MAJOR} =~ ^[0-9]+$ ]] && (( VERSION_MAJOR < 10 )); then
   echo "No specified packages for version ${VERSION_ID} using default packages for version lower than 10"
   apt-get install -y $(paste -s -d ' ' ${TMP_PACKAGE_PATH}packages_lower_10)
 else

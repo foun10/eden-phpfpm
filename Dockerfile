@@ -28,6 +28,7 @@ RUN install-php-extensions gd \
     oauth \
     yaml \
     amqp \
+    ftp \
     @composer
 
 # Ignore error if package doesn't exist for php version
@@ -45,7 +46,14 @@ ENV PHP_ERROR_REPORTING=E_ALL
 
 # Add xdebug config
 COPY config/extensions/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+ENV XDEBUG_MODE=off
 ENV XDEBUG_IDE_KEY=docker
+ENV XDEBUG_START_WITH_REQUEST=no
+ENV XDEBUG_LOG=/dev/stdout
+ENV XDEBUG_LOG_LEVEL=0
+ENV XDEBUG_CLIENT_HOST=host.docker.internal
+ENV XDEBUG_CLIENT_PORT=9003
+ENV XDEBUG_MAX_NESTING_LEVEL=1024
 
 # Install node js
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash

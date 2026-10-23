@@ -12,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         container: [
+          {source: "8.5", tags: "foun10/eden-phpfpm:8.5"},
           {source: "8.4", tags: "foun10/eden-phpfpm:latest,foun10/eden-phpfpm:8.4"},
-          {source: "8.4", tags: "foun10/eden-phpfpm:8.4"},
           {source: "8.3", tags: "foun10/eden-phpfpm:8.3"},
           {source: "8.2", tags: "foun10/eden-phpfpm:8.2"},
           {source: "8.1", tags: "foun10/eden-phpfpm:8.1"},
@@ -29,7 +29,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push ${{ matrix.container.tag }}
+      - name: Build and push ${{ matrix.container.tags }}
         uses: docker/build-push-action@v4
         with:
           push: true
